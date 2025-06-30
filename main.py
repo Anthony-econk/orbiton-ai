@@ -22,6 +22,12 @@ async def slack_events(request: Request):
         return PlainTextResponse("📝 Here's your task list!")
     elif command == "/orbiton.delete":
         return PlainTextResponse(f"❌ Deleted task: {text}")
+    elif command == "/orbiton.update":
+        return PlainTextResponse(f"❌ Update task Descrition: {text}")
+    elif command == "/orbiton.status":
+        return PlainTextResponse(f"❌ Chage task Status: {text}")
+    elif command == "/orbiton.mytask":
+        return PlainTextResponse(f"❌ View My task: {text}")
     else:
         return PlainTextResponse(f"❓ Unknown command: {text}")
 
