@@ -1,22 +1,27 @@
-from fastapi import FastAPI, Request, Header
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, Request
+from fastapi.responses import PlainTextResponse
 import uvicorn
-import os
 
 app = FastAPI()
 
 @app.post("/slack/events")
-async def slack_events(request: Request, x_slack_signature: str = Header(None), x_slack_request_timestamp: str = Header(None)):
-    payload = await request.json()
-    
-    # ✅ Slack Challenge 처리 (URL 검증용)
-    if payload.get("type") == "url_verification":
-        return JSONResponse(content={"challenge": payload["challenge"]})
+async def slack_events(request: Request):
+    form_data = await request.form()
+    command = form_data.get("command")
+    text = form_data.get("text")
+    user_name = form_data.get("user_name")
 
-    # ✅ Slack Event 처리 로그
-    print("🔔 Event received from Slack:", payload)
+    print(f"📩 Received: {command=} {text=} {user_name=}")
 
-    return JSONResponse(content={"ok": True})
+    # 여기서 명령어별 로직 분기
+    if text.startswith("assign"):
+        return PlainTextResponse(f"✔ Task assigned: {text}")
+    elif text.startswith("deadline"):
+        return PlainTextResponse(f"📆 Deadline set: {text}")
+    elif text.startswith("list"):
+        return PlainTextResponse("📝 Here's your task list!")
+    else:
+        return PlainTextResponse(f"🔍 Unknown command: `{text}`")
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=3000)
