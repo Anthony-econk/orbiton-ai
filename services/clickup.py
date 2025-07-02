@@ -35,3 +35,55 @@ def get_task_list():
     response = requests.get(url, headers=headers)
     print(f"[ClickUp] Task List Response {response.status_code}: {response.text}")
     return response.json()
+
+# ✅ 특정 Task 이름으로 ID 조회
+def find_task_id_by_name(task_name):
+    url = f"https://api.clickup.com/api/v2/list/{CLICKUP_LIST_ID}/task"
+    headers = {
+        "Authorization": CLICKUP_API_KEY
+    }
+    res = requests.get(url, headers=headers)
+    data = res.json()
+    tasks = data.get("tasks", [])
+    for task in tasks:
+        if task["name"] == task_name:
+            return task["id"]
+    return None
+
+# ✅ Task ID로 삭제
+def delete_task_by_id(task_id):
+    url = f"https://api.clickup.com/api/v2/task/{task_id}"
+    headers = {
+        "Authorization": CLICKUP_API_KEY
+    }
+    res = requests.delete(url, headers=headers)
+    print(f"[ClickUp] Delete Response {res.status_code}")
+    return res.status_code == 200
+
+# ✅ Task 설명 업데이트
+def update_task_description(task_id, description):
+    url = f"https://api.clickup.com/api/v2/task/{task_id}"
+    headers = {
+        "Authorization": CLICKUP_API_KEY,
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "description": description
+    }
+    res = requests.put(url, headers=headers, json=payload)
+    print(f"[ClickUp] Update Description Response {res.status_code}")
+    return res.status_code == 200
+
+# ✅ Task 상태 업데이트
+def update_task_status(task_id, status):
+    url = f"https://api.clickup.com/api/v2/task/{task_id}"
+    headers = {
+        "Authorization": CLICKUP_API_KEY,
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "status": status  # ex: 'to do', 'in progress', 'done'
+    }
+    res = requests.put(url, headers=headers, json=payload)
+    print(f"[ClickUp] Update Status Response {res.status_code}")
+    return res.status_code == 200

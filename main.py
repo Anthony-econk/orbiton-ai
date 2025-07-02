@@ -2,8 +2,7 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import PlainTextResponse
 # 소수 구성중 임시 주석처리
-# from commands import assign, deadline, tasklist, delete, update, status, mytask
-from commands import assign, deadline, tasklist 
+from commands import assign, deadline, tasklist, delete, update, status, mytask
 import uvicorn
 import os
 import requests
