@@ -1,7 +1,9 @@
 # main.py
 from fastapi import FastAPI, Request
 from fastapi.responses import PlainTextResponse
-from commands import assign, deadline, tasklist, delete, update, status, mytask
+# 소수 구성중 임시 주석처리
+# from commands import assign, deadline, tasklist, delete, update, status, mytask
+from commands import assign, deadline, tasklist 
 import uvicorn
 import os
 import requests
