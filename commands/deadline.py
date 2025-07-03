@@ -1,6 +1,6 @@
 # commands/deadline.py
 from fastapi.responses import PlainTextResponse
-from services.clickup import create_clickup_task
+from services.clickup import create_clickup_task, find_similar_task  # ✅ 유사도 함수 추가
 from datetime import datetime
 
 
