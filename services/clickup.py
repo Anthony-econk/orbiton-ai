@@ -3,6 +3,7 @@ import os
 import requests
 from rapidfuzz import fuzz
 
+# 동일소수 재반영을 위한 주석 추가
 # 환경변수로부터 ClickUp API 정보 가져오기
 CLICKUP_API_KEY = os.getenv("CLICKUP_API_KEY")
 CLICKUP_LIST_ID = os.getenv("CLICKUP_LIST_ID")
