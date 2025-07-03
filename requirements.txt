@@ -5,3 +5,4 @@ python-dotenv
 requests
 httpx
 python-multipart
+rapidfuzz
