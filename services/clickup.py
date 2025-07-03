@@ -1,6 +1,7 @@
 # services/clickup.py
 import os
 import requests
+from rapidfuzz import fuzz
 
 # 환경변수로부터 ClickUp API 정보 가져오기
 CLICKUP_API_KEY = os.getenv("CLICKUP_API_KEY")
@@ -25,6 +26,17 @@ def create_clickup_task(task_name, due_date=None):
     response = requests.post(url, headers=headers, json=payload)
     print(f"[ClickUp] Response {response.status_code}: {response.text}")
     return response.json()
+
+# 90% 이상 유사한 기존 작업 찾기
+def find_similar_task(task_name, threshold=90):
+    tasks = get_task_list().get("tasks", [])
+    matches = []
+    for task in tasks:
+        score = fuzz.WRatio(task_name, task["name"])
+        if score >= threshold:
+            matches.append((task["id"], task["name"], score))
+    # 점수 높은 순 정렬
+    return sorted(matches, key=lambda x: -x[2])
 
 # ✅ ClickUp 리스트에서 Task 목록 조회 함수
 def get_task_list():
