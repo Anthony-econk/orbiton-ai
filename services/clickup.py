@@ -28,16 +28,25 @@ def create_clickup_task(task_name, due_date=None):
     print(f"[ClickUp] Response {response.status_code}: {response.text}")
     return response.json()
 
-# 90% 이상 유사한 기존 작업 찾기
-def find_similar_task(task_name, threshold=90):
+def find_similar_task(task_name, threshold=80):  # ← 임시로 80%로 낮춤
     tasks = get_task_list().get("tasks", [])
     matches = []
     for task in tasks:
-        # prefix 제거하고 비교
-        clean_task_name = task["name"].split(":", 1)[-1].strip()
-        score = fuzz.WRatio(task_name, clean_task_name)
+        # techsoft: prefix 제거
+        raw_name = task["name"]
+        clean_name = raw_name.split(":", 1)[-1].strip()
+        
+        # 직접 포함되는지 우선 체크
+        if task_name.strip() in clean_name:
+            matches.append((task["id"], raw_name, 100))  # 직접 포함이면 100점 부여
+            continue
+
+        # 유사도 계산
+        score = fuzz.WRatio(task_name.strip(), clean_name)
         if score >= threshold:
-            matches.append((task["id"], task["name"], score))
+            matches.append((task["id"], raw_name, score))
+
+    # 점수 높은 순으로 정렬
     return sorted(matches, key=lambda x: -x[2])
 
 # ✅ ClickUp 리스트에서 Task 목록 조회 함수
