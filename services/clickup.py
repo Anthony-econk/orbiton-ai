@@ -40,9 +40,6 @@ def find_similar_task(task_name, threshold=90):
             matches.append((task["id"], task["name"], score))
     return sorted(matches, key=lambda x: -x[2])
 
-
-
-
 # ✅ ClickUp 리스트에서 Task 목록 조회 함수
 def get_task_list():
     url = f"https://api.clickup.com/api/v2/list/{CLICKUP_LIST_ID}/task"
@@ -89,4 +86,18 @@ def update_task_description(task_id, description):
     }
     res = requests.put(url, headers=headers, json=payload)
     print(f"[ClickUp] Update Description Response {res.status_code}")
+    return res.status_code == 200
+
+# ✅ Task 상태 업데이트 함수
+def update_task_status(task_id, status):
+    url = f"https://api.clickup.com/api/v2/task/{task_id}"
+    headers = {
+        "Authorization": CLICKUP_API_KEY,
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "status": status  # 예: 'to do', 'in progress', 'done', 'done'
+    }
+    res = requests.put(url, headers=headers, json=payload)
+    print(f"[ClickUp] Update Status Response {res.status_code}")
     return res.status_code == 200
