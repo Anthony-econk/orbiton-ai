@@ -33,11 +33,15 @@ def find_similar_task(task_name, threshold=90):
     tasks = get_task_list().get("tasks", [])
     matches = []
     for task in tasks:
-        score = fuzz.WRatio(task_name, task["name"])
+        # prefix 제거하고 비교
+        clean_task_name = task["name"].split(":", 1)[-1].strip()
+        score = fuzz.WRatio(task_name, clean_task_name)
         if score >= threshold:
             matches.append((task["id"], task["name"], score))
-    # 점수 높은 순 정렬
     return sorted(matches, key=lambda x: -x[2])
+
+
+
 
 # ✅ ClickUp 리스트에서 Task 목록 조회 함수
 def get_task_list():
@@ -85,18 +89,4 @@ def update_task_description(task_id, description):
     }
     res = requests.put(url, headers=headers, json=payload)
     print(f"[ClickUp] Update Description Response {res.status_code}")
-    return res.status_code == 200
-
-# ✅ Task 상태 업데이트
-def update_task_status(task_id, status):
-    url = f"https://api.clickup.com/api/v2/task/{task_id}"
-    headers = {
-        "Authorization": CLICKUP_API_KEY,
-        "Content-Type": "application/json"
-    }
-    payload = {
-        "status": status  # ex: 'to do', 'in progress', 'done'
-    }
-    res = requests.put(url, headers=headers, json=payload)
-    print(f"[ClickUp] Update Status Response {res.status_code}")
     return res.status_code == 200
