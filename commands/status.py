@@ -1,6 +1,6 @@
 # commands/status.py
 from fastapi.responses import PlainTextResponse
-from services.clickup import update_task_status, find_similar_task
+from services.clickup import update_task_status, find_similar_task, add_task_comment
 
 STATUS_MAP = {
     "완료": "done",
