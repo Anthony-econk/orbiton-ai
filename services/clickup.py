@@ -1,15 +1,20 @@
-# services/clickup.py
 import os
+import json
 import requests
 from rapidfuzz import fuzz
 
-# 동일소수 재반영을 위한 주석 추가
-# 환경변수로부터 ClickUp API 정보 가져오기
+# 환경변수
 CLICKUP_API_KEY = os.getenv("CLICKUP_API_KEY")
 CLICKUP_LIST_ID = os.getenv("CLICKUP_LIST_ID")
+CLICKUP_TEAM_ID = os.getenv("CLICKUP_TEAM_ID")
 
-# ClickUp에 Task 생성 요청 함수
-def create_clickup_task(task_name, due_date=None):
+# 사용자 매핑 JSON 로딩
+def load_user_mapping():
+    with open("services/user_map.json", "r", encoding="utf-8") as f:
+        return json.load(f)
+
+# ClickUp에 Task 생성
+def create_clickup_task(task_name, due_date=None, assignee_email=None):
     url = f"https://api.clickup.com/api/v2/list/{CLICKUP_LIST_ID}/task"
     headers = {
         "Authorization": CLICKUP_API_KEY,
@@ -24,66 +29,74 @@ def create_clickup_task(task_name, due_date=None):
     if due_date:
         payload["due_date"] = due_date
 
-    response = requests.post(url, headers=headers, json=payload)
-    print(f"[ClickUp] Response {response.status_code}: {response.text}")
-    return response.json()
+    # 이메일이 있으면 assignee 지정
+    if assignee_email:
+        user_id = find_clickup_user_id(assignee_email)
+        if user_id:
+            payload["assignees"] = [user_id]
 
-def find_similar_task(task_name, threshold=80):  # ← 임시로 80%로 낮춤
+    res = requests.post(url, headers=headers, json=payload)
+    print(f"[ClickUp] Create Response: {res.status_code} - {res.text}")
+    return res.json()
+
+# ClickUp 사용자 ID 조회
+def find_clickup_user_id(email):
+    url = f"https://api.clickup.com/api/v2/team/{CLICKUP_TEAM_ID}/user"
+    headers = {
+        "Authorization": CLICKUP_API_KEY
+    }
+    res = requests.get(url, headers=headers)
+    if res.status_code != 200:
+        return None
+
+    data = res.json()
+    for member in data.get("users", []):
+        if member["user"]["email"] == email:
+            return member["user"]["id"]
+    return None
+
+# 기존 작업 유사도 검색
+def find_similar_task(task_name, threshold=80):
     tasks = get_task_list().get("tasks", [])
     matches = []
     for task in tasks:
-        # techsoft: prefix 제거
-        raw_name = task["name"]
-        clean_name = raw_name.split(":", 1)[-1].strip()
-        
-        # 직접 포함되는지 우선 체크
-        if task_name.strip() in clean_name:
-            matches.append((task["id"], raw_name, 100))  # 직접 포함이면 100점 부여
+        raw = task["name"]
+        clean = raw.split(":", 1)[-1].strip()
+
+        if task_name.strip() in clean:
+            matches.append((task["id"], raw, 100))
             continue
 
-        # 유사도 계산
-        score = fuzz.WRatio(task_name.strip(), clean_name)
+        score = fuzz.WRatio(task_name.strip(), clean)
         if score >= threshold:
-            matches.append((task["id"], raw_name, score))
+            matches.append((task["id"], raw, score))
 
-    # 점수 높은 순으로 정렬
     return sorted(matches, key=lambda x: -x[2])
 
-# ✅ ClickUp 리스트에서 Task 목록 조회 함수
 def get_task_list():
     url = f"https://api.clickup.com/api/v2/list/{CLICKUP_LIST_ID}/task"
     headers = {
         "Authorization": CLICKUP_API_KEY
     }
-    response = requests.get(url, headers=headers)
-    print(f"[ClickUp] Task List Response {response.status_code}: {response.text}")
-    return response.json()
-
-# ✅ 특정 Task 이름으로 ID 조회
-def find_task_id_by_name(task_name):
-    url = f"https://api.clickup.com/api/v2/list/{CLICKUP_LIST_ID}/task"
-    headers = {
-        "Authorization": CLICKUP_API_KEY
-    }
     res = requests.get(url, headers=headers)
-    data = res.json()
-    tasks = data.get("tasks", [])
-    for task in tasks:
+    print(f"[ClickUp] List Response: {res.status_code}")
+    return res.json()
+
+def find_task_id_by_name(task_name):
+    for task in get_task_list().get("tasks", []):
         if task["name"] == task_name:
             return task["id"]
     return None
 
-# ✅ Task ID로 삭제
 def delete_task_by_id(task_id):
     url = f"https://api.clickup.com/api/v2/task/{task_id}"
     headers = {
         "Authorization": CLICKUP_API_KEY
     }
     res = requests.delete(url, headers=headers)
-    print(f"[ClickUp] Delete Response {res.status_code}")
+    print(f"[ClickUp] Delete Response: {res.status_code}")
     return res.status_code == 200
 
-# ✅ Task 설명 업데이트
 def update_task_description(task_id, description):
     url = f"https://api.clickup.com/api/v2/task/{task_id}"
     headers = {
@@ -94,10 +107,8 @@ def update_task_description(task_id, description):
         "description": description
     }
     res = requests.put(url, headers=headers, json=payload)
-    print(f"[ClickUp] Update Description Response {res.status_code}")
     return res.status_code == 200
 
-# ✅ Task 상태 업데이트 함수
 def update_task_status(task_id, status):
     url = f"https://api.clickup.com/api/v2/task/{task_id}"
     headers = {
@@ -105,13 +116,11 @@ def update_task_status(task_id, status):
         "Content-Type": "application/json"
     }
     payload = {
-        "status": status  # 예: 'to do', 'in progress', 'done', 'done'
+        "status": status
     }
     res = requests.put(url, headers=headers, json=payload)
-    print(f"[ClickUp] Update Status Response {res.status_code}")
     return res.status_code == 200
 
-# ✅ ClickUp Task에 댓글(comment) 추가 : 슬랙에서 명령 입력 시 PMS에 직관적인 표시 및 사용자 인지도 향상을 위
 def add_task_comment(task_id, comment_text):
     url = f"https://api.clickup.com/api/v2/task/{task_id}/comment"
     headers = {
@@ -122,5 +131,4 @@ def add_task_comment(task_id, comment_text):
         "comment_text": comment_text
     }
     res = requests.post(url, headers=headers, json=payload)
-    print(f"[ClickUp] Add Comment Response {res.status_code}")
     return res.status_code == 200
