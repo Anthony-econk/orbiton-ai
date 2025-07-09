@@ -1,6 +1,6 @@
 # commands/update.py
 from fastapi.responses import PlainTextResponse
-from services.clickup import update_task_description, find_similar_task
+from services.clickup import update_task_description, find_similar_task, add_task_comment
 import re
 
 # /orbiton.update 명령어 핸들러
@@ -16,6 +16,12 @@ async def handle(text, user_name):
             top_id, top_name, score = similar[0]
             if score >= 80:
                 success = update_task_description(top_id, description)
+
+                # 🗨️ 자동 댓글 추가
+                comment = f"✏️ *{user_name}*님이 Slack을 통해 작업 설명을 변경했습니다:\n> {description}"
+                add_task_comment(top_id, comment)
+                
+                
                 return PlainTextResponse(
                     f"✏️ 작업 설명 수정 완료: {top_name}" if success else "⚠️ 설명 수정 실패"
                 )

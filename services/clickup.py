@@ -110,3 +110,17 @@ def update_task_status(task_id, status):
     res = requests.put(url, headers=headers, json=payload)
     print(f"[ClickUp] Update Status Response {res.status_code}")
     return res.status_code == 200
+
+# ✅ ClickUp Task에 댓글(comment) 추가 : 슬랙에서 명령 입력 시 PMS에 직관적인 표시 및 사용자 인지도 향상을 위
+def add_task_comment(task_id, comment_text):
+    url = f"https://api.clickup.com/api/v2/task/{task_id}/comment"
+    headers = {
+        "Authorization": CLICKUP_API_KEY,
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "comment_text": comment_text
+    }
+    res = requests.post(url, headers=headers, json=payload)
+    print(f"[ClickUp] Add Comment Response {res.status_code}")
+    return res.status_code == 200
