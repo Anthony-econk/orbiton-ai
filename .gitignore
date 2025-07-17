@@ -1,5 +1,39 @@
+# Python
 __pycache__/
 *.pyc
-.venv/
+*.pyo
+*.pyd
+
+# Virtualenv
+venv/
+ENV/
+
+# VSCode
+.vscode/
+
+# Logs
+*.log
+
+# dotenv
 .env
-".env" 
+
+# GeoIP DB
+GeoLite2-*.mmdb
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# PyCharm
+.idea/
+
+# Database Files
+*.sqlite3
+orbiton.db
+
+# Coverage
+htmlcov/
+.coverage
+
+# Test Outputs
+pytest_cache/
