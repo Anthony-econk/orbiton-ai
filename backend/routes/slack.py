@@ -13,12 +13,25 @@ import re
 
 router = APIRouter()
 
-# 환경변수 로딩
-SLACK_SIGNING_SECRET = os.getenv("SLACK_SIGNING_SECRET")
-SLACK_VERIFICATION_TOKEN = os.getenv("SLACK_VERIFICATION_TOKEN")
+# 환경변수 로딩 (점검을 위해 잠시 주석 처리 250724)
+#SLACK_SIGNING_SECRET = os.getenv("SLACK_SIGNING_SECRET")
+#SLACK_VERIFICATION_TOKEN = os.getenv("SLACK_VERIFICATION_TOKEN")
 
-if not SLACK_SIGNING_SECRET or not SLACK_VERIFICATION_TOKEN:
-    raise EnvironmentError("SLACK_SIGNING_SECRET 또는 SLACK_VERIFICATION_TOKEN 환경변수가 설정되지 않았습니다.")
+#if not SLACK_SIGNING_SECRET or not SLACK_VERIFICATION_TOKEN:
+#    raise EnvironmentError("SLACK_SIGNING_SECRET 또는 SLACK_VERIFICATION_TOKEN 환경변수가 설정되지 않았습니다.")
+
+# 오류를 찾기 위한 임시 테스트용 250724
+def get_slack_secrets():
+    signing_secret = os.getenv("SLACK_SIGNING_SECRET")
+    verification_token = os.getenv("SLACK_VERIFICATION_TOKEN")
+    if not signing_secret or not verification_token:
+        raise EnvironmentError("SLACK 관련 환경변수가 설정되지 않았습니다.")
+    return signing_secret, verification_token
+
+SLACK_SIGNING_SECRET, SLACK_VERIFICATION_TOKEN = get_slack_secrets()
+
+
+
 
 # Slack Signature 검증 함수
 def verify_slack_request(request: Request, body: bytes) -> bool:
