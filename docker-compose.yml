@@ -1,0 +1,46 @@
+# 파일 위치: orbiton.ai/docker-compose.yml
+# GPU LLM 속도 저하 문제 해결을 위해 GPU 친화적으로 설정 변경 250724
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: orbitonai-backend
+    container_name: orbiton-backend
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    environment:
+      - OLLAMA_USE_GPU=1
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: orbitonai-frontend
+    container_name: orbiton-frontend
+    ports:
+      - "5173:5173"
+    restart: unless-stopped
+
+  ollama:
+    build:
+      context: ./ollama
+      dockerfile: Dockerfile
+    image: orbitonai-ollama
+    container_name: orbiton-ollama
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    ports:
+      - "11434:11434"
+    restart: unless-stopped
