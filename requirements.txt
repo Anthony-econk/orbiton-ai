@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+slack_sdk
+python-dotenv
+requests
+httpx
+python-multipart
+rapidfuzz
