@@ -17,15 +17,17 @@ from backend.database.init_db import init_db, insert_sample_data
 router = APIRouter(prefix="/health", tags=["Health"])
 
 # ✅ 0. DB 초기화용 엔드포인트 (운영 배포 시 제거 권장)
-@router.get("/init", summary="DB 초기화")
-def initialize_database():
-    try:
-        init_db()
-        insert_sample_data()
-        return {"status": "ok", "message": "DB Initialized"}
-    except Exception as e:
-        logger.error(f"DB 초기화 실패: {e}")
-        return {"status": "error", "message": str(e)}
+# DB 초기화 후 주석처리 * Render shell을 사용하려면 월 정기구매 해야 해서 
+# 간접 방법으로 DB Table 초기생성작업 250725
+# @router.get("/init", summary="DB 초기화")
+# def initialize_database():
+#     try:
+#         init_db()
+#         insert_sample_data()
+#         return {"status": "ok", "message": "DB Initialized"}
+#     except Exception as e:
+#         logger.error(f"DB 초기화 실패: {e}")
+#         return {"status": "error", "message": str(e)}
 
 # ✅ 1. 기본 핑 테스트
 @router.get("/ping", summary="기본 헬스 체크")
