@@ -8,3 +8,4 @@ python-multipart
 rapidfuzz
 sqlalchemy
 psycopg2-binary
+geoip2
