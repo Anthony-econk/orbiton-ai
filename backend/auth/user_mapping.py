@@ -3,7 +3,7 @@
 
 from typing import Optional
 from backend.database.db_session import SessionLocal
-from backend.database.models import UserMapping
+from backend.models import UserMapping
 
 # Slack 사용자 ID를 내부 시스템 사용자 ID로 DB에서 조회
 def map_slack_to_internal_user(slack_user_id: str) -> Optional[str]:

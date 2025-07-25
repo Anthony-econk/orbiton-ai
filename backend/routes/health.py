@@ -9,7 +9,7 @@ import os
 import requests
 
 from backend.database.db_session import get_db
-from backend.database.models import UserMapping, ClickUpTask
+from backend.models import UserMapping, ClickUpTask
 from backend.database.schemas import UserMappingSchema, ClickUpTaskSchema
 from backend.utils.logger import logger
 from backend.database.init_db import init_db, insert_sample_data
