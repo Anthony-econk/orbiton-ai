@@ -1,0 +1,71 @@
+"use strict";(()=>{var g=({hostname:e,protocol:o})=>[".maxmind.com",".blog-site-602.pages.dev",".dev-site-4ua.pages.dev"].some(t=>e.endsWith(t))||`${o}//${e}`=="https://maxmind.zendesk.com"?"www.maxmind.com":e,i=g(window.location),b=async e=>{let o;if(window.location.pathname.startsWith("/en/opt-out"))o=!1;else try{let t=new URL(`${window.location.protocol}//${i}/en/gpc-check`);t.searchParams.append("js_signal",e?"1":"0");let n=await fetch(t,{method:"POST"});if(!n.ok)throw new Error(`Request failed with status: ${n.status}`);o=(await n.json()).show_gpc??!1}catch{o=!1}return o},u=()=>{try{let e="_mm-ls-test";window.localStorage.setItem(e,e);let o=window.localStorage.getItem(e);return window.localStorage.removeItem(e),o===e}catch{return!1}},p=u(),h=30*24*60*60*1e3,m="_mmgpctime",f=`
+dialog#global-privacy-control-check::backdrop { background-color: rgba(0,0,0,0.75); }
+dialog#global-privacy-control-check {
+    border-color: rgba(0, 0, 0, 0.175);
+    border-radius: 7px;
+    border-width: 1px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    color: #364956;
+    max-width: 95%;
+    padding: 0px;
+}
+p.gpc-modal-p {
+    padding: 16px;
+    padding-bottom: 0px;
+}
+div.gpc-modal-header {
+    align-items: flex-end;
+    background-color: rgb(248, 249, 250);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.175);
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+}
+div.gpc-modal-header h4 {
+    margin: 0;
+}
+div.gpc-modal-header button {
+    border: 1px solid rgba(0, 0, 0, 0.175);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    font-size: 1.2rem;
+    padding: 1px 12px;
+    transition: box-shadow, background-color 0.15s ease;
+}
+div.gpc-modal-header button:active,
+div.gpc-modal-header button:hover {
+    background-color: rgba(0,0,0,0.15);
+    box-shadow: 0 0px 0px rgba(0, 0, 0, 0.15);
+}
+div.gpc-modal-footer {
+    background-color: rgb(248, 249, 250);
+    border-top: 1px solid rgba(0, 0, 0, 0.175);
+    display: flex;
+    justify-content: flex-end;
+    padding: 6px 12px;
+}
+div.gpc-modal-footer button {
+    background: #008fc6;
+    border-radius: 0;
+    border: 1px solid #008fc6;
+    color: #fdfbdc;
+    margin: 0.5rem;
+    padding: 0.375rem 1.125rem;
+    transition: color, background-color 0.15s ease;
+}
+div.gpc-modal-footer button:active {
+    background-color: #0a58ca;
+    border-color: #0a53be;
+    color: #fff;
+}
+div.gpc-modal-footer button:focus, div.gpc-modal-footer button:hover {
+    background-color: #006a93;
+    border-color: #006a93;
+    color: #fdfbdc;
+}
+@media screen and (min-width: 530px) {
+    dialog#global-privacy-control-check {
+        max-width: 500px;
+    }
+}
+`,w=()=>{if(!p)return!1;let e=Number(window.localStorage.getItem(m));return Date.now()-e<h},x=()=>{p&&window.localStorage.setItem(m,Date.now().toString())},v=async()=>{if(!await b(navigator.globalPrivacyControl??!1)||w())return;let o=y(i),t=new CSSStyleSheet;t.replaceSync(f),document.adoptedStyleSheets=[...document.adoptedStyleSheets,t],document.body.appendChild(o),o.querySelectorAll("button").forEach(r=>r.addEventListener("click",()=>{o.close()}));let a=document.querySelector("a.js-donotsell");a&&a.addEventListener("click",()=>{o.close()}),o.addEventListener("close",()=>{x()}),o.addEventListener("cancel",r=>r.preventDefault()),o.showModal()};function y(e){let o=document.createElement("dialog");o.id="global-privacy-control-check";let t=document.createElement("div");t.className="gpc-modal-header";let n=document.createElement("h4");n.textContent="Global Privacy Control";let a=document.createElement("button");a.className="btn-close",a.type="button",a.setAttribute("aria-label","Close"),t.append(n,a);let r=document.createElement("p");r.className="gpc-modal-p",r.textContent="MaxMind has detected a GPC signal from your browser. MaxMind does not share any data collected from browsers with the GPC signal with any other companies (except with our service providers or as required by law).";let d=document.createElement("p");d.className="gpc-modal-p",d.textContent="If you would like to opt out of other sharing of your personal data please see our ";let c=document.createElement("a");c.className="js-donotsell",c.href=`${window.location.protocol}//${e}/en/opt-out`,c.rel="noreferrer noopener",c.target="_blank",c.textContent="Do Not Sell Webform",d.appendChild(c),d.appendChild(document.createTextNode("."));let s=document.createElement("div");s.className="gpc-modal-footer";let l=document.createElement("button");return l.type="button",l.textContent="Close",s.appendChild(l),o.append(t,r,d,s),o}v();})();
+//# sourceMappingURL=global-privacy-control.js.map

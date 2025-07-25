@@ -7,10 +7,20 @@ from backend.database.db_session import get_db
 from backend.database import models
 from backend.database.schemas import UserMappingSchema, ClickUpTaskSchema
 from typing import List
+# DB 생성용 임시 코드 
+from backend.database.init_db import init_db, insert_sample_data
+
 import os
 import requests
 
 router = APIRouter()
+
+# DB 생성용 임시 코드
+@router.get("/health/init")
+def initialize_database():
+    init_db()
+    insert_sample_data()
+    return {"status": "ok", "message": "DB Initialized"}
 
 # 1. 기본 Ping
 @router.get("/health/ping")
