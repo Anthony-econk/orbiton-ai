@@ -1,4 +1,4 @@
-# app/database/models.py
+# backend/database/models.py
 # 데이터베이스 모델 정의 - 운영 제품용 완성형
 
 from sqlalchemy import Column, String, Integer, DateTime
@@ -17,6 +17,7 @@ class UserMapping(Base):
 # ClickUp 태스크 저장 모델 (완성형)
 class ClickUpTask(Base):
     __tablename__ = 'clickup_tasks'
+    __table_args__ = {'extend_existing': True} # 중복 정의 방지용
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     task_id = Column(String, unique=True, nullable=False)
