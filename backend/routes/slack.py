@@ -1,7 +1,7 @@
 # backend/routes/slack.py
 # Slack 명령어 라우터 - 보안 검증 + 명령 처리 + 확장성 고려 통합버전
 
-from fastapi import APIRouter, Form, Request
+from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from backend.commands.slack import ask, summary, tasklist, mytask, assign, deadline, update, status, delete
 from backend.utils.logger import logger
@@ -10,6 +10,7 @@ import hmac
 import hashlib
 import time
 import re
+from urllib.parse import urlencode  # ✅  오류 방지용. [선언문]
 
 router = APIRouter()
 
@@ -22,7 +23,7 @@ def get_slack_secrets():
     return signing_secret, verification_token
 
 # ✅ Slack Signature 검증 함수
-def verify_slack_request(request: Request, body: bytes) -> bool:
+def verify_slack_request(request: Request, body: str) -> bool:
     try:
         signing_secret, _ = get_slack_secrets()
     except Exception as e:
@@ -40,7 +41,7 @@ def verify_slack_request(request: Request, body: bytes) -> bool:
         logger.warning("Slack 요청 시간이 너무 지남")
         return False
 
-    sig_basestring = f"v0:{timestamp}:{body.decode('utf-8')}"
+    sig_basestring = f"v0:{timestamp}:{body}"
     my_signature = 'v0=' + hmac.new(
         signing_secret.encode(),
         sig_basestring.encode(),
@@ -55,16 +56,17 @@ def sanitize_input(text: str, max_length: int = 500) -> str:
 
 # ✅ Slack 명령어 라우터
 @router.post("/slack/command")
-async def handle_slack_command(
-    request: Request,
-    token: str = Form(...),
-    command: str = Form(...),
-    text: str = Form(...),
-    user_name: str = Form(...),
-    user_id: str = Form(...),
-    channel_id: str = Form(...)
-):
-    body = await request.body()
+async def handle_slack_command(request: Request):
+    form = await request.form()
+
+    token = form.get("token")
+    command = form.get("command")
+    text = form.get("text")
+    user_name = form.get("user_name")
+    user_id = form.get("user_id")
+    channel_id = form.get("channel_id")
+
+    body = urlencode(form)  # ✅ 정확한 Slack 서명 검증용 포맷
 
     if not verify_slack_request(request, body):
         logger.warning(f"Slack Signature 검증 실패 - 사용자: {user_id}")
