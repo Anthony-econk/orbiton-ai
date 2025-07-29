@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from backend.routes import slack, health
 from backend.utils.logger import logger
+from backend.utils.geoip_policy import is_country_blocked
 import geoip2.database
 import os
 
@@ -41,7 +42,7 @@ async def geoip_restriction(request: Request, call_next):
         try:
             response = geoip_reader.country(client_ip)
             country_code = response.country.iso_code
-            if country_code not in ALLOWED_COUNTRIES:
+            if is_country_blocked(country_code):
                 logger.warning(f"접근 차단 - IP: {client_ip}, 국가: {country_code}")
                 return JSONResponse(status_code=403, content={"error": "해당 지역에서는 접근이 제한됩니다."})
         except Exception as e:
