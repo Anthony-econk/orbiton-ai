@@ -5,12 +5,12 @@ from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from backend.commands.slack import ask, summary, tasklist, mytask, assign, deadline, update, status, delete
 from backend.utils.logger import logger
+from urllib.parse import urlencode  # ✅  오류 방지용. [선언문]
 import os
 import hmac
 import hashlib
 import time
 import re
-from urllib.parse import urlencode  # ✅  오류 방지용. [선언문]
 
 router = APIRouter()
 

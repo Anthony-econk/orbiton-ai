@@ -1,10 +1,13 @@
-# 파일 위치: orbiton-ai/ollama/Dockerfile
+# orbiton-ai/ollama/Dockerfile
 
 FROM ollama/ollama:latest  
-# Ollama 공식 이미지
+# Ollama 공식 이미지 기반
 
-# RUN ollama pull llama3  
-# LLaMA3 모델 다운로드 > (수정) ollama 실행 전 이므로 다운로드 불가로 주석처리 이후 수동작업 진행
+WORKDIR /ollama  
+# 명시적 작업 디렉토리 설정 (필수는 아니지만 구조화 목적)
+
+# 모델 다운로드는 컨테이너 실행 후 수동 실행해야 함 (빌드 시 불가능)
+# RUN ollama pull llama3
 
 EXPOSE 11434  
 # Ollama 기본 포트 노출

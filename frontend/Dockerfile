@@ -1,19 +1,19 @@
-# 파일 위치: orbiton-ai/frontend/Dockerfile
+# orbiton-ai/frontend/Dockerfile
 
 FROM node:20  
-# Node 20 사용
+# Node.js 20 이미지 사용
 
-WORKDIR /app  
-# 작업 디렉토리
+WORKDIR /frontend  
+# 작업 디렉토리를 /frontend로 설정
 
-COPY package*.json ./  
-# package.json 복사
+COPY ./frontend/package*.json ./  
+# package.json 및 lock 파일 복사
 
 RUN npm install  
-# 패키지 설치
+# 의존성 설치
 
-COPY . .  
-# 모든 소스 복사
+COPY ./frontend .  
+# 소스 전체 복사
 
 CMD ["npm", "run", "dev", "--", "--host"]
-# 외부 접근 허용
+# 외부 접근 허용을 위한 dev 서버 실행
