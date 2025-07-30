@@ -1,12 +1,10 @@
-# 파일 위치: orbiton.ai/docker-compose.yml
-
 version: '3.8'
 
 services:
   backend:
     build:
-      context: .
-      dockerfile: backend/Dockerfile
+      context: ./backend
+      dockerfile: Dockerfile
     image: orbitonai-backend
     container_name: orbiton-backend
     ports:
@@ -15,6 +13,7 @@ services:
       - ./GeoLite2-Country.mmdb:/backend/GeoLite2-Country.mmdb
     environment:
       - OLLAMA_USE_GPU=1
+      - PYTHONPATH=/backend
     deploy:
       resources:
         reservations:
@@ -26,8 +25,8 @@ services:
 
   frontend:
     build:
-      context: .
-      dockerfile: frontend/Dockerfile
+      context: ./frontend
+      dockerfile: Dockerfile
     image: orbitonai-frontend
     container_name: orbiton-frontend
     ports:
@@ -38,8 +37,8 @@ services:
 
   ollama:
     build:
-      context: .
-      dockerfile: ollama/Dockerfile
+      context: ./ollama
+      dockerfile: Dockerfile
     image: orbitonai-ollama
     container_name: orbiton-ollama
     ports:

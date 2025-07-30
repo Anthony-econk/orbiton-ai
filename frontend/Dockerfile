@@ -10,7 +10,7 @@ COPY ./frontend/package*.json .
 
 RUN npm install  
 
-COPY ./frontend .  
+COPY . .  
 
 CMD ["npm", "run", "dev", "--", "--host"]  
 # 개발 서버 실행
