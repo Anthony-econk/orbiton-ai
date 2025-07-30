@@ -26,16 +26,16 @@ services:
     restart: unless-stopped
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    image: orbitonai-frontend
-    container_name: orbiton-frontend
-    ports:
-      - "5173:5173"
-    depends_on:
-      - backend
-    restart: unless-stopped
+  build:
+    context: .
+    dockerfile: frontend/Dockerfile
+  image: orbitonai-frontend
+  container_name: orbiton-frontend
+  ports:
+    - "5173:5173"
+  depends_on:
+    - backend
+  restart: unless-stopped
 
   ollama:
     build:
