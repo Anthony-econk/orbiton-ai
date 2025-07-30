@@ -1,10 +1,10 @@
-# orbiton.ai/ollama/Dockerfile
+# 파일 위치: orbiton.ai/ollama/Dockerfile
 
 FROM ollama/ollama:latest  
-# Ollama LLM 이미지
+# Ollama 공식 이미지 사용
 
 WORKDIR /ollama  
-# 실제 폴더명 기준
+EXPOSE 11434  
 
-EXPOSE 11434
-CMD ["serve"]
+CMD ["serve"]  
+# Ollama 서버 실행

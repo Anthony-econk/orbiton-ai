@@ -1,11 +1,16 @@
-# orbiton.ai/frontend/Dockerfile
+# 파일 위치: orbiton.ai/frontend/Dockerfile
 
-FROM node:20
-WORKDIR /frontend
+FROM node:20  
+# Node.js 20 LTS 사용 (보수적 안정 버전)
+
+WORKDIR /frontend  
+# 프론트엔드 작업 디렉토리
 
 COPY ./frontend/package*.json .  
-RUN npm install
+
+RUN npm install  
 
 COPY ./frontend .  
-CMD ["npm", "run", "dev", "--", "--host"]
 
+CMD ["npm", "run", "dev", "--", "--host"]  
+# 개발 서버 실행

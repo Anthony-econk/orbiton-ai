@@ -1,13 +1,12 @@
 # 파일 위치: orbiton.ai/docker-compose.yml
-# GPU + GeoIP + 경로 통일 + 실행 순서 + 컨테이너 명시 + 재시작 정책 포함
 
 version: '3.8'
 
 services:
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: backend/Dockerfile
     image: orbitonai-backend
     container_name: orbiton-backend
     ports:
@@ -21,26 +20,26 @@ services:
         reservations:
           devices:
             - capabilities: [gpu]
+    restart: unless-stopped
     depends_on:
       - ollama
-    restart: unless-stopped
 
   frontend:
-  build:
-    context: .
-    dockerfile: frontend/Dockerfile
-  image: orbitonai-frontend
-  container_name: orbiton-frontend
-  ports:
-    - "5173:5173"
-  depends_on:
-    - backend
-  restart: unless-stopped
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    image: orbitonai-frontend
+    container_name: orbiton-frontend
+    ports:
+      - "5173:5173"
+    restart: unless-stopped
+    depends_on:
+      - backend
 
   ollama:
     build:
-      context: ./ollama
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ollama/Dockerfile
     image: orbitonai-ollama
     container_name: orbiton-ollama
     ports:
