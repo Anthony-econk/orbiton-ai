@@ -16,6 +16,7 @@ services:
     environment:
       - OLLAMA_USE_GPU=1
       - PYTHONPATH=/ 
+      - CLICKUP_API_KEY=your_real_clickup_token_here
     deploy:
       resources:
         reservations:
