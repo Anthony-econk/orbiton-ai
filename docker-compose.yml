@@ -1,10 +1,12 @@
+# docker-compose.yml
+
 version: '3.8'
 
 services:
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: backend/Dockerfile
     image: orbitonai-backend
     container_name: orbiton-backend
     ports:
@@ -13,7 +15,7 @@ services:
       - ./GeoLite2-Country.mmdb:/backend/GeoLite2-Country.mmdb
     environment:
       - OLLAMA_USE_GPU=1
-      - PYTHONPATH=/backend
+      - PYTHONPATH=/ 
     deploy:
       resources:
         reservations:
@@ -25,8 +27,8 @@ services:
 
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: frontend/Dockerfile
     image: orbitonai-frontend
     container_name: orbiton-frontend
     ports:
@@ -37,8 +39,8 @@ services:
 
   ollama:
     build:
-      context: ./ollama
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ollama/Dockerfile
     image: orbitonai-ollama
     container_name: orbiton-ollama
     ports:
