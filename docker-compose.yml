@@ -17,6 +17,7 @@ services:
       - OLLAMA_USE_GPU=1
       - PYTHONPATH=/ 
       - CLICKUP_API_KEY=your_real_clickup_token_here
+      - DATABASE_URL=postgresql://orbiton_user:krVYZgxoSaX5wZcX9zAm7Mvt7KlF9cAx@dpg-d21dgtadbo4c73e21db0-a/orbiton
     deploy:
       resources:
         reservations:
