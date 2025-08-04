@@ -10,7 +10,7 @@ class UserMappingSchema(BaseModel):
     internal_user_id: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # ClickUpTask 조회용 스키마
 class ClickUpTaskSchema(BaseModel):
@@ -22,4 +22,4 @@ class ClickUpTaskSchema(BaseModel):
     list_id: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True

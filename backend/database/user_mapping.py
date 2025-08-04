@@ -23,6 +23,9 @@ class UserMappingOut(UserMappingCreate):
     created_at: datetime
     updated_at: datetime
 
+    class Config:
+        from_attributes = True  # Pydantic v2 대응
+
 # ✅ GET - 사용자 매핑 단건 조회
 @router.get("/{platform}/{user_id}", response_model=UserMappingOut)
 def get_user_mapping(platform: str, user_id: str, db: Session = Depends(get_db)):

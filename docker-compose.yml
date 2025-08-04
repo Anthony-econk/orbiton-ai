@@ -13,6 +13,8 @@ services:
       - "8000:8000"
     volumes:
       - ./GeoLite2-Country.mmdb:/backend/GeoLite2-Country.mmdb
+    env_file:
+      - .env
     environment:
       - OLLAMA_USE_GPU=1
       - PYTHONPATH=/
