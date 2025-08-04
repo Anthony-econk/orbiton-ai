@@ -15,12 +15,16 @@ services:
       - ./GeoLite2-Country.mmdb:/backend/GeoLite2-Country.mmdb
     environment:
       - OLLAMA_USE_GPU=1
-      - PYTHONPATH=/ 
-      - DATABASE_URL=${DATABASE_URL}
+      - PYTHONPATH=/
       - CLICKUP_API_KEY=${CLICKUP_API_KEY}
       - CLICKUP_LIST_ID=${CLICKUP_LIST_ID}
+      - DATABASE_URL=${DATABASE_URL}
       - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET}
       - SLACK_VERIFICATION_TOKEN=${SLACK_VERIFICATION_TOKEN}
+      - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
+      - GEOIP_DB_PATH=${GEOIP_DB_PATH}
+      - LLM_API_URL=${LLM_API_URL}
+      - LLM_MODEL=${LLM_MODEL}
     deploy:
       resources:
         reservations:
