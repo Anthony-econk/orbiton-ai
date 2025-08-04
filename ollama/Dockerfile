@@ -1,10 +1,9 @@
-# 파일 위치: orbiton.ai/ollama/Dockerfile
+# ollama/Dockerfile  
+# Orbiton.ai - Ollama 모델 서비스용 Dockerfile
 
-FROM ollama/ollama:latest  
-# Ollama 공식 이미지 사용
+FROM ollama/ollama:latest 
 
-WORKDIR /ollama  
-EXPOSE 11434  
+COPY ./ollama ./  
 
 CMD ["serve"]  
-# Ollama 서버 실행
+# Ollama 모델 서비스 실행
