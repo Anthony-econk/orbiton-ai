@@ -12,7 +12,7 @@ COPY ./backend ./
 COPY ./requirements.txt ./requirements.txt  
 # 루트의 requirements.txt 명확히 복사
 
-COPY ./GeoLite2-Country.mmdb ./backend/GeoLite2-Country.mmdb  
+COPY ./GeoLite2-Country.mmdb ./GeoLite2-Country.mmdb  
 # 루트의 GeoIP DB 복사
 
 RUN pip install --no-cache-dir -r requirements.txt  
