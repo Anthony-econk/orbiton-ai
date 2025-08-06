@@ -20,7 +20,7 @@ async def lifespan(app: FastAPI):
 
     logger.info("🔄 Lifespan startup 시작 - Orbiton.ai API 서버 준비 중...")
     
-    # GeoIP 초기화
+    # GeoIP 초기화 (DB 위치 변경 250806)
     geoip_db_path = os.getenv("GEOIP_DB_PATH", "GeoLite2-Country.mmdb")
     try:
         geoip_reader = geoip2.database.Reader(geoip_db_path)
