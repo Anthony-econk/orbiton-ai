@@ -14,3 +14,6 @@ FastAPI AI PMS Slack Bot
 | 9  | `/health/clickup`       | ClickUp API 연동 확인          | `CLICKUP_API_KEY` 인증               | `{ "status": "ok", "team_count": int }`          |
 | 10 | `/health/geoip/test`    | 접속자 IP 기준 국가 확인        | GeoIP DB (`request.client.host`)    | 국가명, ISO코드                                   |
 | 11 | `/health/geoip/ip/{ip}` | 특정 IP 국가 정보 확인          | GeoIP DB (`입력된 IP`)              | 국가명, ISO코드                                   |
+
+
+ex : https://orbiton-slack-bot.onrender.com/health/geoip
