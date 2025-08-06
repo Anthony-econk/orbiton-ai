@@ -10,6 +10,8 @@ COPY ./backend ./
 COPY ./requirements.txt ./requirements.txt
 COPY ./GeoLite2-Country.mmdb ./GeoLite2-Country.mmdb
 
+# GeoIP DB 환경 변수 활용을 위한 선언
+ENV GEOIP_DB_PATH=/backend/GeoLite2-Country.mmdb
 # 디버깅용 파일 목록 확인
 RUN echo "📁 백엔드 디렉토리 리스트:" && ls -al /backend
 RUN echo "📁 루트 디렉토리 리스트:" && ls -al /
