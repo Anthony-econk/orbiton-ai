@@ -1,5 +1,5 @@
 # backend/routes/health.py
-# 시스템 상태 모니터링 API - Codex 기반 리팩토링 + GeoIP 테스트 통합
+# 시스템 상태 모니터링 API - 고급 구조 기반 리팩토링
 
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse
@@ -7,15 +7,14 @@ from sqlalchemy.orm import Session
 from typing import List, Dict
 import os
 import requests
+import geoip2.database
 
 from backend.database.db_session import get_db
 from backend.models import UserMapping, ClickUpTask
 from backend.database.schemas import UserMappingSchema, ClickUpTaskSchema
 from backend.utils.logger import logger
 from backend.database.init_db import init_db, insert_sample_data
-
-# ✅ GeoIP 모듈 (전역 geoip_reader 필요)
-from backend.main import geoip_reader
+from backend.utils.geoip_policy import ALLOW_ALL_COUNTRIES, ALLOWED_COUNTRIES, is_country_blocked
 
 router = APIRouter(prefix="/health", tags=["Health"])
 
@@ -53,8 +52,7 @@ def env_check() -> Dict[str, str]:
     keys = [
         "LLM_MODEL", "LLM_API_URL", "SLACK_SIGNING_SECRET",
         "SLACK_VERIFICATION_TOKEN", "SLACK_BOT_TOKEN",
-        "CLICKUP_API_KEY", "CLICKUP_LIST_ID", "DATABASE_URL",
-        "GEOIP_DB_PATH"
+        "CLICKUP_API_KEY", "CLICKUP_LIST_ID", "DATABASE_URL"
     ]
     return {k: "✅" if os.getenv(k) else "❌" for k in keys}
 
@@ -118,35 +116,27 @@ def clickup_check():
     except Exception as e:
         return {"status": "error", "message": f"ClickUp API 오류: {e}"}
 
-# ✅ 10. GeoIP DB 테스트 - 접속자 IP 기준
-@router.get("/geoip/test", summary="GeoIP 테스트 - 클라이언트 IP")
-def geoip_test(request: Request):
-    client_ip = request.client.host
-    if geoip_reader:
-        try:
-            response = geoip_reader.country(client_ip)
-            return {
-                "ip": client_ip,
-                "country": response.country.name,
-                "iso_code": response.country.iso_code
-            }
-        except Exception as e:
-            return {"ip": client_ip, "error": str(e)}
-    else:
-        return {"status": "error", "message": "GeoIP DB not loaded"}
+# ✅ 10. GeoIP 상태 확인
+@router.get("/geoip", summary="GeoIP 상태 및 정책 확인")
+def geoip_status():
+    GEOIP_DB_PATH = os.getenv("GEOIP_DB_PATH", "GeoLite2-Country.mmdb")
+    status = {}
+    try:
+        reader = geoip2.database.Reader(GEOIP_DB_PATH)
+        test_ip = "8.8.8.8"  # Google DNS (미국)
+        response = reader.country(test_ip)
+        country_code = response.country.iso_code
+        blocked = is_country_blocked(country_code)
+        status["geoip_db_loaded"] = True
+        status["test_ip"] = test_ip
+        status["country_code"] = country_code
+        status["is_blocked"] = blocked
+    except Exception as e:
+        status["geoip_db_loaded"] = False
+        status["error"] = str(e)
 
-# ✅ 11. GeoIP DB 테스트 - 특정 IP 입력
-@router.get("/geoip/ip/{ip}", summary="GeoIP 테스트 - 입력 IP")
-def geoip_from_ip(ip: str):
-    if geoip_reader:
-        try:
-            response = geoip_reader.country(ip)
-            return {
-                "ip": ip,
-                "country": response.country.name,
-                "iso_code": response.country.iso_code
-            }
-        except Exception as e:
-            return {"ip": ip, "error": str(e)}
-    else:
-        return {"status": "error", "message": "GeoIP DB not loaded"}
+    status["policy"] = {
+        "ALLOW_ALL_COUNTRIES": ALLOW_ALL_COUNTRIES,
+        "ALLOWED_COUNTRIES": ALLOWED_COUNTRIES
+    }
+    return status
