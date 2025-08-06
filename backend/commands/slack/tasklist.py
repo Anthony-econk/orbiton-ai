@@ -1,4 +1,4 @@
-# app/commands/slack/tasklist.py
+# backend/commands/slack/tasklist.py
 # Slack 명령어 /orbiton.tasklist 처리 - ClickUp 태스크 목록 조회
 
 from fastapi.responses import PlainTextResponse
