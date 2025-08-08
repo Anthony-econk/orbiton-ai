@@ -11,8 +11,6 @@ services:
     container_name: orbiton-backend
     ports:
       - "8000:8000"
-    volumes:
-      - ./GeoLite2-Country.mmdb:/backend/GeoLite2-Country.mmdb
     env_file:
       - .env
     environment:
