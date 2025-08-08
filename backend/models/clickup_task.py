@@ -1,17 +1,18 @@
 # backend/models/clickup_task.py
 
+from datetime import datetime
 from sqlalchemy import Column, String, DateTime, Index
-from backend.database.db_session import Base  # 단일 Base 사용
+from backend.database.db_session import Base
 
 class ClickUpTask(Base):
-    __tablename__ = "clickup_tasks"  
+    __tablename__ = "clickup_tasks"
 
-    task_id = Column(String, primary_key=True, index=True)
-    name = Column(String, nullable=False)
-    status = Column(String, nullable=True)      # 운영 DB 호환: NULL 허용
-    assignee = Column(String, nullable=True)    # 운영 DB 호환: NULL 허용
-    due_date = Column(String, nullable=True)
-    list_id = Column(String, nullable=False)
+    task_id    = Column(String, primary_key=True, index=True)
+    name       = Column(String, nullable=False)
+    status     = Column(String, nullable=True)
+    assignee   = Column(String, nullable=True)
+    due_date   = Column(String, nullable=True)
+    list_id    = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
@@ -23,3 +24,4 @@ class ClickUpTask(Base):
 
     def __repr__(self) -> str:
         return f"<ClickUpTask {self.task_id} {self.name}>"
+
