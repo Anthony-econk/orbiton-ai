@@ -8,7 +8,7 @@ WORKDIR /backend
 
 COPY ./backend ./
 COPY ./requirements.txt ./requirements.txt
-COPY ./GeoLite2-Country.mmdb ./GeoLite2-Country.mmdb
+COPY ./backend/GeoLite2-Country.mmdb ./backend/GeoLite2-Country.mmdb
 
 # GeoIP DB 환경 변수 활용을 위한 선언
 ENV GEOIP_DB_PATH=/backend/GeoLite2-Country.mmdb
