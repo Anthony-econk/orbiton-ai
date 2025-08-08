@@ -1,7 +1,7 @@
 # Orbiton Slack Bot 
 FastAPI AI PMS Slack Bot
 
-| 번호 | 경로(prefix=/api/     | 설명                       | 테스트 대상                          | 예상 응답                                       |
+| 번호 | 경로(prefix=/api)     | 설명                       | 테스트 대상                          | 예상 응답                                       |
 | -- | ----------------------- | --------------------           | --------------------------------    | ----------------------------------------------  |
 | 1  | `/health/ping`          | 서버 실행 여부 확인             | FastAPI 자체                        | `{ "status": "ok" }`                             |
 | 2  | `/health/db`            | DB 연결 및 사용자/태스크 수 확인 | PostgreSQL 연결 + ORM               | `{ "users": int, "tasks": int }`                 |
@@ -17,4 +17,4 @@ FastAPI AI PMS Slack Bot
 
 
 ex : https://orbiton-slack-bot.onrender.com/health/geoip
-prefix= /api/
+prefix= /api
